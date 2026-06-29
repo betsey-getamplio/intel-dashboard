@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solution Provider Intelligence — Amplio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.26.0/dist/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f7f7f5;
+    --bg-tertiary: #f1efea;
+    --text-primary: #1a1a18;
+    --text-secondary: #5f5e5a;
+    --text-tertiary: #888780;
+    --border: rgba(0,0,0,0.12);
+    --border-md: rgba(0,0,0,0.2);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --blue-50: #E6F1FB;
+    --blue-600: #185FA5;
+    --blue-800: #0C447C;
+    --purple-50: #EEEDFE;
+    --purple-600: #534AB7;
+    --teal-50: #E1F5EE;
+    --teal-600: #0F6E56;
+    --amber-50: #FAEEDA;
+    --amber-600: #854F0B;
+    --green-50: #EAF3DE;
+    --green-800: #27500A;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a;
+      --bg-secondary: #252523;
+      --bg-tertiary: #2e2e2b;
+      --text-primary: #f0ede6;
+      --text-secondary: #b4b2a9;
+      --text-tertiary: #888780;
+      --border: rgba(255,255,255,0.1);
+      --border-md: rgba(255,255,255,0.2);
+    }
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .page-wrap {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+  .logo-lock {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-mark {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    background: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bg);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+  }
+  .page-title { font-size: 18px; font-weight: 500; color: var(--text-primary); }
+  .page-sub { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+  .updated-badge {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    background: var(--bg-secondary);
+    border: 0.5px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+    white-space: nowrap;
+  }
+
+  /* Summary strip */
+  .summary-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+  .summary-card {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+  }
+  .summary-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
+  .summary-value { font-size: 20px; font-weight: 500; color: var(--text-primary); }
+  .summary-note { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+
+  /* Provider cards */
+  .provider-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 620px) {
+    .provider-grid { grid-template-columns: 1fr; }
+    .summary-strip { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .provider-card {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .provider-card.featured {
+    border: 1.5px solid var(--blue-600);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .name-row { display: flex; align-items: center; gap: 10px; }
+  .avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .card-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+  .card-name:hover { text-decoration: underline; }
+  .card-domain { font-size: 12px; color: var(--text-tertiary); margin-top: 1px; }
+
+  .hs-badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .hs-lead { background: var(--blue-50); color: var(--blue-800); }
+  .hs-none { background: var(--bg-secondary); color: var(--text-secondary); border: 0.5px solid var(--border); }
+
+  .value-prop {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    padding-bottom: 14px;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .stat {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    padding: 10px 11px;
+  }
+  .stat-label {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 4px;
+  }
+  .stat-value { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+
+  .icp-section { display: flex; flex-wrap: wrap; gap: 5px; }
+  .icp-label-prefix {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    padding-top: 3px;
+    margin-right: 2px;
+    flex-shrink: 0;
+  }
+  .icp-tag {
+    font-size: 11px;
+    color: var(--text-secondary);
+    border: 0.5px solid var(--border-md);
+    border-radius: 20px;
+    padding: 2px 9px;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 0.5px solid var(--border);
+  }
+  .hq-info { font-size: 12px; color: var(--text-tertiary); display: flex; align-items: center; gap: 4px; }
+  .ext-link {
+    font-size: 12px;
+    color: var(--blue-600);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .ext-link:hover { text-decoration: underline; }
+
+  /* Footer */
+  .page-footer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 0.5px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .footer-note { font-size: 11px; color: var(--text-tertiary); line-height: 1.7; max-width: 500px; }
+  .footer-brand { font-size: 12px; color: var(--text-tertiary); font-weight: 500; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="logo-lock">
+      <div class="logo-mark">A</div>
+      <div>
+        <div class="page-title">Solution provider intelligence</div>
+        <div class="page-sub">DPP &amp; digital ID competitive landscape · 4 providers</div>
+      </div>
+    </div>
+    <div class="updated-badge"><i class="ti ti-refresh" style="font-size:11px;vertical-align:-1px;margin-right:3px"></i>Updated Jun 2026</div>
+  </div>
+
+  <!-- Summary strip -->
+  <div class="summary-strip">
+    <div class="summary-card">
+      <div class="summary-label">Providers tracked</div>
+      <div class="summary-value">4</div>
+      <div class="summary-note">DPP &amp; digital ID</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">In HubSpot</div>
+      <div class="summary-value">1</div>
+      <div class="summary-note">Avery Dennison · Lead</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Largest by revenue</div>
+      <div class="summary-value">~$9B</div>
+      <div class="summary-note">Avery Dennison</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Smallest team</div>
+      <div class="summary-value">~19</div>
+      <div class="summary-note">Minespider</div>
+    </div>
+  </div>
+
+  <!-- Cards -->
+  <div class="provider-grid">
+
+    <!-- Digimarc -->
+    <div class="provider-card">
+      <div class="card-top">
+        <div class="name-row">
+          <div class="avatar" style="background:var(--blue-50);color:var(--blue-600)">DM</div>
+          <div>
+            <a href="https://www.digimarc.com/" target="_blank" rel="noopener" class="card-name">Digimarc</a>
+            <div class="card-domain">digimarc.com</div>
+          </div>
+        </div>
+        <span class="hs-badge hs-none"><i class="ti ti-circle-dashed" style="font-size:11px"></i>Not in HubSpot</span>
+      </div>
+
+      <div class="value-prop">Digital watermarking and barcode platform for product authentication, retail loss prevention, and digital trust. Embeds imperceptible machine-readable signals into packaging enabling serialized tracking without physical label redesigns.</div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-label">Employees</div>
+          <div class="stat-value">~226</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Annual revenue</div>
+          <div class="stat-value">~$22M</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Est. clients</div>
+          <div class="stat-value">Undisclosed</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap">
+        <span class="icp-label-prefix">ICP</span>
+        <div class="icp-section">
+          <span class="icp-tag">Pharma</span>
+          <span class="icp-tag">Food &amp; bev</span>
+          <span class="icp-tag">Consumer goods</span>
+          <span class="icp-tag">Retail loss prevention</span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="hq-info"><i class="ti ti-map-pin" style="font-size:12px"></i>Beaverton, OR · Public (DMRC)</div>
+        <a href="https://www.digimarc.com/" target="_blank" rel="noopener" class="ext-link">Visit <i class="ti ti-external-link" style="font-size:12px"></i></a>
+      </div>
+    </div>
+
+    <!-- Avery Dennison -->
+    <div class="provider-card featured">
+      <div class="card-top">
+        <div class="name-row">
+          <div class="avatar" style="background:var(--purple-50);color:var(--purple-600)">AD</div>
+          <div>
+            <a href="https://apparelsolutions.averydennison.com/en/solutions/consumer-engagement-solutions/digital-product-passport" target="_blank" rel="noopener" class="card-name">Avery Dennison</a>
+            <div class="card-domain">averydennison.com</div>
+          </div>
+        </div>
+        <span class="hs-badge hs-lead"><i class="ti ti-circle-check" style="font-size:11px"></i>HubSpot: Lead</span>
+      </div>
+
+      <div class="value-prop">End-to-end DPP-as-a-Service (DPPaaS) for apparel and fashion brands on the atma.io connected product cloud. Combines physical labeling, RFID/NFC, serialization, and EU DPP compliance into a single managed platform. 28B+ items already connected. ABI Research's #1 DPP vendor.</div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-label">Employees</div>
+          <div class="stat-value">~35,000</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Annual revenue</div>
+          <div class="stat-value">~$9B</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Items on platform</div>
+          <div class="stat-value">28B+</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap">
+        <span class="icp-label-prefix">ICP</span>
+        <div class="icp-section">
+          <span class="icp-tag">Apparel &amp; fashion</span>
+          <span class="icp-tag">Retail</span>
+          <span class="icp-tag">EU DPP compliance</span>
+          <span class="icp-tag">Automotive / EV</span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="hq-info"><i class="ti ti-map-pin" style="font-size:12px"></i>Mentor, OH · Public (AVY)</div>
+        <a href="https://apparelsolutions.averydennison.com/en/solutions/consumer-engagement-solutions/digital-product-passport" target="_blank" rel="noopener" class="ext-link">Visit <i class="ti ti-external-link" style="font-size:12px"></i></a>
+      </div>
+    </div>
+
+    <!-- Kezzler -->
+    <div class="provider-card">
+      <div class="card-top">
+        <div class="name-row">
+          <div class="avatar" style="background:var(--teal-50);color:var(--teal-600)">KZ</div>
+          <div>
+            <a href="https://kezzler.com/" target="_blank" rel="noopener" class="card-name">Kezzler</a>
+            <div class="card-domain">kezzler.com</div>
+          </div>
+        </div>
+        <span class="hs-badge hs-none"><i class="ti ti-circle-dashed" style="font-size:11px"></i>Not in HubSpot</span>
+      </div>
+
+      <div class="value-prop">Cloud-based digital ID and traceability platform for FMCG, dairy, and retail brands. Provides serialized QR codes, batch traceability, automated DPP workflows, and supply chain visibility. Founded 2001 with deep European retail roots and TOMRA/Investinor backing.</div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-label">Employees</div>
+          <div class="stat-value">~58</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Annual revenue</div>
+          <div class="stat-value">~$5.6M</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Notable clients</div>
+          <div class="stat-value" style="font-size:11px">Migros, FrieslandCampina</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap">
+        <span class="icp-label-prefix">ICP</span>
+        <div class="icp-section">
+          <span class="icp-tag">FMCG</span>
+          <span class="icp-tag">Dairy &amp; food</span>
+          <span class="icp-tag">European retail</span>
+          <span class="icp-tag">DPP compliance</span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="hq-info"><i class="ti ti-map-pin" style="font-size:12px"></i>Oslo, Norway · Private · Est. 2001</div>
+        <a href="https://kezzler.com/" target="_blank" rel="noopener" class="ext-link">Visit <i class="ti ti-external-link" style="font-size:12px"></i></a>
+      </div>
+    </div>
+
+    <!-- Minespider -->
+    <div class="provider-card">
+      <div class="card-top">
+        <div class="name-row">
+          <div class="avatar" style="background:var(--amber-50);color:var(--amber-600)">MS</div>
+          <div>
+            <a href="https://www.minespider.com/" target="_blank" rel="noopener" class="card-name">Minespider</a>
+            <div class="card-domain">minespider.com</div>
+          </div>
+        </div>
+        <span class="hs-badge hs-none"><i class="ti ti-circle-dashed" style="font-size:11px"></i>Not in HubSpot</span>
+      </div>
+
+      <div class="value-prop">Supply chain traceability and digital battery/product passports for mining, metals, and EV manufacturers. Uses permissioned data sharing and AI-assisted document extraction for audit-ready chain-of-custody from mine to manufacturer. Clients include Google, VW, Ford, and Renault.</div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-label">Employees</div>
+          <div class="stat-value">~19</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Total raised</div>
+          <div class="stat-value">$3.25M</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Notable clients</div>
+          <div class="stat-value" style="font-size:11px">VW, Google, Ford, Renault</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap">
+        <span class="icp-label-prefix">ICP</span>
+        <div class="icp-section">
+          <span class="icp-tag">Mining &amp; metals</span>
+          <span class="icp-tag">Battery / EV OEMs</span>
+          <span class="icp-tag">Automotive</span>
+          <span class="icp-tag">Supply chain compliance</span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="hq-info"><i class="ti ti-map-pin" style="font-size:12px"></i>Berlin, Germany · Seed stage</div>
+        <a href="https://www.minespider.com/" target="_blank" rel="noopener" class="ext-link">Visit <i class="ti ti-external-link" style="font-size:12px"></i></a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="page-footer">
+    <div class="footer-note">Firmographic data sourced from ZoomInfo, Crunchbase, SEC filings, and company websites. HubSpot status reflects Amplio CRM as of June 2026. Revenue figures are estimates; employee counts from LinkedIn/ZoomInfo.</div>
+    <div class="footer-brand">Amplio · Competitive Intel</div>
+  </div>
+
+</div>
+</body>
+</html>
